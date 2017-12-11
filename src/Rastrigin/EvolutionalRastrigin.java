@@ -13,13 +13,12 @@ import java.util.Random;
  */
 public class EvolutionalRastrigin {
 
-    public float[][] population;
-    public float[] childOne;
-    public float[] childTwo;
-    public int bestOne = 0, worstTwo = 0, worstOne = 0;
+    private float[][] population;
+    private float[] childOne;
+    private float[] childTwo;
+    private int bestOne = 0, worstTwo = 0, worstOne = 0;
     private final int sizePopulation, sizeFamily;
-    public float[] Solutions;
-    
+ 
     public EvolutionalRastrigin(int x, int y) {
         this.sizePopulation = x;
         this.sizeFamily = y;
@@ -28,10 +27,10 @@ public class EvolutionalRastrigin {
     public void runEvoAlgorithm() {
         Random rnd = new Random();
         int option;
-        int k = 0;
+        int iteration = 0;
         this.createPopulation();
         this.findBestAndWorsts();
-        while (k < 1000000 && this.functionRastrigin(this.population[this.bestOne]) > 0) {
+        while (iteration < 100000 && this.getBestScore() > 0) {
             option = rnd.nextInt(2); // 0 - Crossover  ##  1 - Mutation
             if (option == 0) {
                 this.Crossover(rnd.nextInt(this.sizePopulation), rnd.nextInt(this.sizePopulation));
@@ -41,23 +40,21 @@ public class EvolutionalRastrigin {
                 this.Replacement(this.worstOne);
             }
             this.findBestAndWorsts();
-            this.Solutions[k] = this.functionRastrigin(this.population[this.bestOne]);
-            k++;
-            //if (k == 100000) System.out.println("A");
+            iteration++;
             //System.out.println(this.functionRastrigin(this.population[this.bestOne]) + " " + this.functionRastrigin(this.population[this.worstOne]));
         }
     }
 
-    public void Replacement(int position) {
+    private void Replacement(int position) {
         System.arraycopy(this.childOne, 0, this.population[position], 0, this.sizeFamily);
     }
     
-    public void ReplacementTwo(int position1, int position2){
+    private void ReplacementTwo(int position1, int position2){
         System.arraycopy(this.childOne, 0, this.population[position1], 0, this.sizeFamily);
         System.arraycopy(this.childTwo, 0, this.population[position2], 0, this.sizeFamily);
     }
 
-    public void findBestAndWorsts() {
+    private void findBestAndWorsts() {
         float bestScore = (float) 1000000;
         float worstScore = (float) -1;
         float current;
@@ -74,7 +71,7 @@ public class EvolutionalRastrigin {
         }
     }
 
-    public void Mutation(int parent) {
+    private void Mutation(int parent) {
         Random rnd = new Random();
         int option = rnd.nextInt(2); // 0 - Uniform Mutation  ##  1 - Nonuniform Mutation with Gaussian Distribuition
         if (option == 0) {
@@ -93,7 +90,7 @@ public class EvolutionalRastrigin {
         }
     }
 
-    public void Crossover(int parent1, int parent2) {
+    private void Crossover(int parent1, int parent2) {
         Random rnd = new Random();
         int option = rnd.nextInt(3); // 0 - One-Point Crossover  ##  1 - Uniform Crossover  ##  2 - Whole Arithmetic Recombination        
         switch (option) {
@@ -121,8 +118,12 @@ public class EvolutionalRastrigin {
                 break;
         }
     }
+    
+    public float getBestScore(){
+        return this.functionRastrigin(this.population[this.bestOne]);
+    }
 
-    public float functionRastrigin(float v[]) {
+    private float functionRastrigin(float v[]) {
         float result = 0;
         for (int i = 0; i < this.sizeFamily; i++) {
             result += (Math.pow(v[i], 2) - 10 * (Math.cos(2 * Math.PI * v[i])));
@@ -130,11 +131,10 @@ public class EvolutionalRastrigin {
         return ((10 * this.sizeFamily) + result);
     }
 
-    public void createPopulation() {
+    private void createPopulation() {
         this.population = new float[this.sizePopulation][this.sizeFamily];
         this.childOne = new float[this.sizeFamily];
         this.childTwo = new float[this.sizeFamily];
-        this.Solutions = new float[1000000];
         Random rnd = new Random();
         for (int i = 0; i < this.sizePopulation; i++) {
             for (int j = 0; j < this.sizeFamily; j++) {
