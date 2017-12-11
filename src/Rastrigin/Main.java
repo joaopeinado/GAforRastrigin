@@ -5,15 +5,20 @@
  */
 package Rastrigin;
 
+import java.io.IOException;
+
 /**
  *
  * @author joaop
  */
 public class Main {
-    public static void main(String[] args) {
-        EvolutionalRastrigin ER = new EvolutionalRastrigin(500, 1000);
+    public static void main(String[] args) throws IOException {
+        EvolutionalRastrigin ER = new EvolutionalRastrigin(500, 100);
         ER.runEvoAlgorithm();
         System.out.println("\n\n" + "Final Score: " + ER.functionRastrigin(ER.population[ER.bestOne]));
+        
+        GravarCSV k = new GravarCSV();
+        k.gravarResultado(ER.Solutions);
     }
 }
 

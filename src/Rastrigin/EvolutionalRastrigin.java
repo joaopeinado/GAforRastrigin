@@ -18,7 +18,7 @@ public class EvolutionalRastrigin {
     public float[] childTwo;
     public int bestOne = 0, worstTwo = 0, worstOne = 0;
     private final int sizePopulation, sizeFamily;
-    
+    public float[] Solutions;
     
     public EvolutionalRastrigin(int x, int y) {
         this.sizePopulation = x;
@@ -28,9 +28,10 @@ public class EvolutionalRastrigin {
     public void runEvoAlgorithm() {
         Random rnd = new Random();
         int option;
+        int k = 0;
         this.createPopulation();
         this.findBestAndWorsts();
-        while (this.functionRastrigin(this.population[this.bestOne]) > 0) {
+        while (k < 1000000 && this.functionRastrigin(this.population[this.bestOne]) > 0) {
             option = rnd.nextInt(2); // 0 - Crossover  ##  1 - Mutation
             if (option == 0) {
                 this.Crossover(rnd.nextInt(this.sizePopulation), rnd.nextInt(this.sizePopulation));
@@ -40,7 +41,10 @@ public class EvolutionalRastrigin {
                 this.Replacement(this.worstOne);
             }
             this.findBestAndWorsts();
-            System.out.println(this.functionRastrigin(this.population[this.bestOne]) + " " + this.functionRastrigin(this.population[this.worstOne]));
+            this.Solutions[k] = this.functionRastrigin(this.population[this.bestOne]);
+            k++;
+            //if (k == 100000) System.out.println("A");
+            //System.out.println(this.functionRastrigin(this.population[this.bestOne]) + " " + this.functionRastrigin(this.population[this.worstOne]));
         }
     }
 
@@ -130,6 +134,7 @@ public class EvolutionalRastrigin {
         this.population = new float[this.sizePopulation][this.sizeFamily];
         this.childOne = new float[this.sizeFamily];
         this.childTwo = new float[this.sizeFamily];
+        this.Solutions = new float[1000000];
         Random rnd = new Random();
         for (int i = 0; i < this.sizePopulation; i++) {
             for (int j = 0; j < this.sizeFamily; j++) {
